@@ -1,0 +1,33 @@
+version: "3.3"
+
+services:
+  ei-rdbms:
+    image: janf57/wso2-ei-mysql:1.0.2
+    build:
+      context: ./wso2-ei-mysql
+    container_name: wso2-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3316:3306"
+ 
+  enterprise-integrator:
+    image: janf57/wso2-ei:1.0.2
+    build:
+      context: ./wso2-ei
+    container_name: wso2-ei
+    ports:
+      - "9453:9453"
+      - "9773:9773"
+      - "8253:8253"
+      - "8290:8290"
+    volumes:
+      - wso2data:/usr/share/wso2/data
+    extra_hosts:
+      - "enterprise-integrator:127.1.0.0"
+    depends_on:
+      - ei-rdbms
+      
+volumes:
+  wso2data:
+    driver: local 
